@@ -7,7 +7,7 @@ MUSIC_PATH = "010001_ToyCar_case1_normal_IND_ch1_0001.wav"
 data, fs = sf.read(BASE_AUDIO_FILE_PATH + MUSIC_PATH)
 
 # 2. 再生する
-print("🔊 再生中...")
+print("再生中...")
 sd.play(data, fs)
 
 # 3. 再生が終わるまでプログラムを待機させる
