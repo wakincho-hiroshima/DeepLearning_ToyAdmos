@@ -12,4 +12,4 @@ sd.play(data, fs)
 
 # 3. 再生が終わるまでプログラムを待機させる
 sd.wait()
-print("🏁 終了")
+print("終了")
