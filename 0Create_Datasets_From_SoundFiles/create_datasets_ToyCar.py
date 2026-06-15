@@ -25,7 +25,7 @@ from tqdm import tqdm
 np.random.seed(0)
 
 # Parameters
-dataset_base = "/run/media/wakincho/SSPQ-USC/Projects/0.Datasets/toy_admos_project/ToyAdmos"  # Please set ToyADMOS directory in your environment
+dataset_base = "/run/media/wakincho/SSPQ-USC/Projects/Datasets/toy_admos_project/ToyAdmos"  # Please set ToyADMOS directory in your environment
 subdataset = "ToyCar"  # "ToyCar" or "ToyConveyor"
 case_num = "case1"
 ch_num = "ch1"
@@ -41,7 +41,7 @@ else:
     noise_dir = dataset_base + "/" + subdataset + "/EnvironmentalNoise_CNT/*" + case_num + "*" + ch_num
 
 # Save dir
-save_dir = "/home/wakincho/Projects/DeepLearning_Projects/src_ToyAdmos/exp1_dataset_" + subdataset
+save_dir = "/run/media/wakincho/SSPQ-USC/Projects/Datasets/toy_admos_project/Training_SoundFiles/" + subdataset + f"/{ch_num}"
 trn_normal_dir = save_dir + "/train_normal/"
 tst_normal_dir = save_dir + "/test_normal/"
 tst_anomaly_dir = save_dir + "/test_anomaly/"

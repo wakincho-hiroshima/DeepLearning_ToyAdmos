@@ -10,6 +10,9 @@ venv/
 env/
 .venv/
 
+#wave images
+Wave_png/
+
 # Jupyter Notebookのチェックポイント
 .ipynb_checkpoints/
 
