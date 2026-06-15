@@ -17,15 +17,15 @@ plt.figure(figsize=(10, 4))
 # 折れ線グラフを描画 (横軸: 時間[秒], 縦軸: 音の大きさ[振幅])
 plt.plot(time, data, color="blue", linewidth=0.5)
 
-# グラフの装飾（ラベルやタイトル）
+# グラフ設定
 plt.title("WAV Audio Waveform")
 plt.xlabel("Time [seconds]")
 plt.ylabel("Amplitude")
 
-# グリッド（補助線）を表示
+# 補助線を表示
 plt.grid(True)
 
 # グラフを保存
-SAVE_PATH = f"/home/wakincho/Projects/DeepLearning_Projects/src_ToyAdmos/1.Train/Wave_png/0{ch_num}0001_ToyCar_case1_normal_IND_ch{ch_num}_0001"
+SAVE_PATH = f"/home/wakincho/Projects/DeepLearning_Projects/src_ToyAdmos/0.Create_Datasets_From_SoundFiles/Wave_png/0{ch_num}0001_ToyCar_case1_normal_IND_ch{ch_num}_0001"
 plt.savefig(SAVE_PATH, dpi=300, bbox_inches='tight')
 print(f"グラフを画像として保存: {SAVE_PATH}")
