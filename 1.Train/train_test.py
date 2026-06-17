@@ -74,7 +74,7 @@ if __name__=="__main__":
     val_normal_tensor  = torch.tensor(val_normal_data)
     val_abnormal_tensor  = torch.tensor(val_abnormal_data)
 
-    train_loader=DataLoader(train_data, batch_size=1, shuffle=True)
+    train_loader=DataLoader(train_tensor, batch_size=1, shuffle=True)
     val_normal_loader=DataLoader(val_normal_tensor, batch_size=1, shuffle=True)
     val_abnormal_loader=DataLoader(val_abnormal_tensor, batch_size=1, shuffle=True)
 
