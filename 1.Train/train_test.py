@@ -37,7 +37,7 @@ def Prepare_train_test_data(data_type):
     for sound_path in sound_files:
         sound_path_dictionaly.append({"Sound Path": sound_path})# 音声データのパスを辞書変数にぶちこむ
         
-    for Data_index in tqdm(sound_path_dictionaly,desc="preprocessing"):
+    for Data_index in tqdm(sound_path_dictionaly,desc="preprocessing", ncols=100):
         target_file = Data_index["Sound Path"]
 
         waveform, sample_rate = librosa.load(target_file)#音声ファイルの波形とレートをロード
@@ -94,11 +94,15 @@ if __name__=="__main__":
     
     losses = []
 
-    for epoch in tqdm(range(10)):
+    epoch_num = 50
+
+    for epoch in tqdm(range(epoch_num), ncols=100):
         # 学習
         train_loss = 0
 
-        for x in train_loader:
+        print(f"\n--train--")
+        train_bar = tqdm(train_loader, desc=f"Epoch {epoch+1}/{epoch_num}", ncols=100)
+        for x in train_bar:
             optimizer.zero_grad()
 
             x = x.to(device)
@@ -112,10 +116,10 @@ if __name__=="__main__":
             optimizer.step()
             train_loss += loss.item()
 
-        print(f"Epoch {epoch+1} - Train Loss (正常の復元エラー): {train_loss:.4f}")
+        print(f"\nEpoch {epoch+1} - Train Loss: {train_loss:.4f}")
 
         # 検証
-        print(f"異常音検知開始")
+        print(f"--evaluation--")
         resnet_model.eval()
 
         normal_loss=[]
@@ -138,63 +142,6 @@ if __name__=="__main__":
                 abnormal_loss.append(loss.item())
 
         # 結果の表示
-        print(f"終了")
-        print(f"検証用 正常音の平均エラー値: {np.mean(normal_loss):.4f}")
-        print(f"検証用 異常音の平均エラー値: {np.mean(abnormal_loss):.4f}")
-
-
-
-#初回ログpreprocessing: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1000/1000 [00:11<00:00, 88.49it/s]
-#preprocessing: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 350/350 [00:03<00:00, 89.66it/s]
-#preprocessing: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 264/264 [00:02<00:00, 88.57it/s]
-#Epoch 1 - Train Loss (正常の復元エラー): 533069.8008
-#異常音検知開始
-#終了
-#検証用 正常音の平均エラー値: 46.6869
-#検証用 異常音の平均エラー値: 76.1982
-
-#Epoch 2 - Train Loss (正常の復元エラー): 53265.7057
-#異常音検知開始
-#終了
-#検証用 正常音の平均エラー値: 48.5111
-#検証用 異常音の平均エラー値: 75.3041
-#Epoch 3 - Train Loss (正常の復元エラー): 48525.9086
-#異常音検知開始
-#終了
-#検証用 正常音の平均エラー値: 47.2244
-#検証用 異常音の平均エラー値: 73.9516
-#Epoch 4 - Train Loss (正常の復元エラー): 48304.5259
-#異常音検知開始
-#終了
-#検証用 正常音の平均エラー値: 50.3384
-#検証用 異常音の平均エラー値: 74.4547
-#Epoch 5 - Train Loss (正常の復元エラー): 47894.3153
-#異常音検知開始
-#終了
-#検証用 正常音の平均エラー値: 46.3967
-#検証用 異常音の平均エラー値: 71.2743
-#Epoch 6 - Train Loss (正常の復元エラー): 41058.7057
-#異常音検知開始
-#終了
-#検証用 正常音の平均エラー値: 40.3647
-#検証用 異常音の平均エラー値: 64.4088
-#Epoch 7 - Train Loss (正常の復元エラー): 38279.2194
-#異常音検知開始
-#終了
-#検証用 正常音の平均エラー値: 36.3428
-#検証用 異常音の平均エラー値: 60.2631
-#Epoch 8 - Train Loss (正常の復元エラー): 35956.4966
-#異常音検知開始
-#終了
-#検証用 正常音の平均エラー値: 35.8817
-#検証用 異常音の平均エラー値: 56.0945
-#Epoch 9 - Train Loss (正常の復元エラー): 35506.2610
-#異常音検知開始
-#終了
-#検証用 正常音の平均エラー値: 35.7616
-#検証用 異常音の平均エラー値: 55.0205
-#Epoch 10 - Train Loss (正常の復元エラー): 35169.5558
-#異常音検知開始
-#終了
-#検証用 正常音の平均エラー値: 36.0154
-#検証用 異常音の平均エラー値: 55.5176
+        print(f"--completed--")
+        print(f"normal sound loss: {np.mean(normal_loss):.4f}")
+        print(f"abnomaly sound loss: {np.mean(abnormal_loss):.4f}")
