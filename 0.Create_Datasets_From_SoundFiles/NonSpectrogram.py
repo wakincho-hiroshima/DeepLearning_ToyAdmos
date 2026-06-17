@@ -13,11 +13,11 @@ SAVE_PATH = f"/home/wakincho/Projects/DeepLearning_Projects/src_ToyAdmos/0.Creat
 data, sample_rate = librosa.load(BASE_AUDIO_FILE_PATH + MUSIC_PATH)
 
 Spectrogram = librosa.feature.melspectrogram(y=data, sr=sample_rate)
-#Spectrogram_dB = librosa.power_to_db(Spectrogram)
+Spectrogram_dB = librosa.power_to_db(Spectrogram)
 
 plt.figure(figsize=(10,4))
 
-librosa.display.specshow(Spectrogram, sr=sample_rate, x_axis='time', y_axis='log')
+librosa.display.specshow(Spectrogram_dB, sr=sample_rate, x_axis='time', y_axis='log')
 
 plt.xlim(0, 11)
 
