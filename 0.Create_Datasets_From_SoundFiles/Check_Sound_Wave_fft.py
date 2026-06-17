@@ -54,4 +54,4 @@ SAVE_PATH = f"/home/wakincho/Projects/DeepLearning_Projects/src_ToyAdmos/0.Creat
 plt.savefig(SAVE_PATH, dpi=300, bbox_inches="tight")
 plt.close()
 
-print(f"📊 普通のFFTグラフを画像として保存: {SAVE_PATH}")
+print(f"普通のFFTグラフを画像として保存: {SAVE_PATH}")
