@@ -3,10 +3,7 @@ import pandas
 import glob
 from tqdm import tqdm
 import librosa
-import librosa.display
-import matplotlib.pyplot
 import numpy as np
-from sklearn.model_selection import train_test_split
 import torch
 from torch.utils.data import Dataset, DataLoader
 import torch.nn as nn
@@ -69,6 +66,8 @@ if __name__=="__main__":
     val_normal_data = normal_sound_features_for_val_dB
     val_abnormal_data = abnormal_sound_features_for_val_dB
 
+    print(train_data.shape)
+
     #PyTorchに入れる
     train_tensor = torch.tensor(train_data)
     val_normal_tensor  = torch.tensor(val_normal_data)
@@ -78,7 +77,7 @@ if __name__=="__main__":
     val_normal_loader=DataLoader(val_normal_tensor, batch_size=1, shuffle=True)
     val_abnormal_loader=DataLoader(val_abnormal_tensor, batch_size=1, shuffle=True)
 
-    # ResNetの構造がわからない場合はResNetの構造を出力して確認しましょう。
+    # ResNetの構造がわからないときはResNetの構造を出力して確認しとく
     # print(resnet_model)
     # 最初の畳み込みのチャネル3をチャネル1に変更する
     resnet_model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
