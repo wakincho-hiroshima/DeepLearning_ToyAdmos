@@ -60,7 +60,7 @@ if __name__=="__main__":
     abnormal_sound_features_for_val, abnormal_sound_features_for_val_dB = Prepare_train_test_data(config["abnormal_sound_for_validation"])
 
     # 学習データと検証用データに分割
-    # 分割必要ない。テストは
+    # テストデータは分割必要ない　学習用とモデルの検証用だけ
     # 元メルスペクトログラム,dBメルスペクトログラムでもどっちでもいい。好きなのえらんで
     train_data = sound_features_for_train_dB
     val_normal_data = normal_sound_features_for_val_dB

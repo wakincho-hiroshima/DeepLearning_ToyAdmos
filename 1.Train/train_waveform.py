@@ -15,8 +15,10 @@ import torch.nn.functional as F
 
 from torchvision.models import resnet34
 
-#音声の生データを使って学習させる。モデルはwavenet,autoencoderを使ってみる
-#まずwavenetをつかう
+# 音声の生データを使って学習させる。モデルはwavenet,autoencoderを使ってみる
+# まずwavenetをつかう
+# WaveNetでは、切り出した音声区間がすべて無音だと、無音を学習してしまうことにより
+# 生成する音声が無音になってしまうという不具合があるそうです。なので、まずは無音区間の除去を行うことにします。
 
 ch_num = "1"
 
@@ -27,7 +29,7 @@ config = {
     "abnormal_sound_for_validation": f"/run/media/wakincho/SSPQ-USC/Projects/Datasets/toy_admos_project/Training_SoundFiles/ToyCar/ch{ch_num}/test_anomaly/"
 }
 
-def Prepare_train_test_data(data_type):
+def Prepare_train_test_data(data_type, sample_rate = 16000):
     # Sound_files配列へ,"training_sound_folder_dir"フォルダに存在するwavファイル名を追加して,ファイル名配列を作成
     sound_files = glob.glob(os.path.join(data_type, "*.wav"))
 
@@ -39,37 +41,55 @@ def Prepare_train_test_data(data_type):
     for sound_path in sound_files:
         sound_path_dictionaly.append({"Sound Path": sound_path})# 音声データのパスを辞書変数にぶちこむ
         
-    for Data_index in tqdm(sound_path_dictionaly,desc="preprocessing", ncols=100):
-        target_file = Data_index["Sound Path"]
+    for target_file in tqdm(sound_files,desc="preprocessing", ncols=100):
 
-        waveform, sample_rate = librosa.load(target_file, sr=16000)#ファイルの波形とレートをロード
+        waveform = librosa.load(target_file, sr = sample_rate)#ファイルの波形とレートをロード,サンプリング周波数16kHz
+
+        #ゼロパディング(未実装)
 
         soundwaves.append(waveform)
-    return np.array(soundwaves)
     
-if __name__=="__main__":
-    # 学習済みのResNetをダウンロード
-    resnet_model = resnet34(weights=True)
+    return np.array(soundwaves)
 
-    #GPU setup
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def clear_no_audio_range(sound_files, top_db):
+    waveform_trimmed =[]
+    #無音区間の除去
+    for waveform in sound_files:
+        waveform, _ = librosa.effects.trim(waveform, top_db)
+        waveform /= np.abs(sound_files).max()#ここで正規化する
 
+        waveform_trimmed.append(waveform)
+    
+    return waveform_tr
+
+def Create_Pytorch_data(self):
     #create data
-    sound_features_for_train, sound_features_for_train_dB = Prepare_train_test_data(config["training_sound_folder_dir"])
-    normal_sound_features_for_val, normal_sound_features_for_val_dB = Prepare_train_test_data(config["normal_sound_for_validation"])
-    abnormal_sound_features_for_val, abnormal_sound_features_for_val_dB = Prepare_train_test_data(config["abnormal_sound_for_validation"])
+    sound_features_for_train = Prepare_train_test_data(config["training_sound_folder_dir"])
+    normal_sound_features_for_val = Prepare_train_test_data(config["normal_sound_for_validation"])
+    abnormal_sound_features_for_val = Prepare_train_test_data(config["abnormal_sound_for_validation"])
 
     # 学習データと検証用データに分割
     # 分割必要ない。テストは
     # 元メルスペクトログラム,dBメルスペクトログラムでもどっちでもいい。好きなのえらんで
-    train_data = sound_features_for_train_dB
-    val_normal_data = normal_sound_features_for_val_dB
-    val_abnormal_data = abnormal_sound_features_for_val_dB
+    train_data = sound_features_for_train
+    val_normal_data = normal_sound_features_for_val
+    val_abnormal_data = abnormal_sound_features_for_val
 
     #PyTorchに入れる
     train_tensor = torch.tensor(train_data)
     val_normal_tensor  = torch.tensor(val_normal_data)
     val_abnormal_tensor  = torch.tensor(val_abnormal_data)
+
+    return train_tensor, val_normal_tensor, val_abnormal_tensor
+
+if __name__=="__main__":
+    # 学習済みのResNetをダウンロード
+    # resnet_model = resnet34(weights=True)
+
+    #GPU setup
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    train_tensor, val_normal_tensor, val_abnormal_tensor = Create_Pytorch_data()
 
     train_loader=DataLoader(train_tensor, batch_size=1, shuffle=True)
     val_normal_loader=DataLoader(val_normal_tensor, batch_size=1, shuffle=True)
